@@ -83,10 +83,11 @@ export default function Editor() {
         
         <div className="flex flex-col flex-1 bg-background">
           <EditorTabs 
-            tabs={openTabs}
-            activeTab={activeFile}
-            onSelectTab={setActiveFile}
-            onCloseTab={handleTabClose}
+            openFiles={openTabs}
+            activePath={activeFile?.path}
+            onSelect={(path) => setActiveFile(openTabs.find(t => t.path === path))}
+            onClose={handleTabClose}
+            dirtyPaths={new Set()}
           />
           <CodeEditor 
             file={activeFile}

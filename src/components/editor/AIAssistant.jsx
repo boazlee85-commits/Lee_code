@@ -21,7 +21,15 @@ function flattenFiles(node, result = []) {
   return result;
 }
 
-export default function AIAssistant({ activeFile, activeContent, fileContents, projectTree, onApplyEdit, onOpenFile, onCreateFile }) {
+export default function AIAssistant({ 
+  activeFile, 
+  activeContent = '', 
+  fileContents = {}, 
+  projectTree = null, 
+  onApplyEdit = () => {}, 
+  onOpenFile = () => {}, 
+  onCreateFile = () => {} 
+}) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);

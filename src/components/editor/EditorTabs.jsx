@@ -2,8 +2,8 @@ import React from 'react';
 import { X, Circle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function EditorTabs({ openFiles, activePath, onSelect, onClose, dirtyPaths }) {
-  if (openFiles.length === 0) return null;
+export default function EditorTabs({ openFiles = [], activePath, onSelect, onClose, dirtyPaths = new Set() }) {
+  if (!openFiles || openFiles.length === 0) return null;
 
   return (
     <div className="h-9 border-b border-border bg-card/30 flex items-stretch overflow-x-auto shrink-0">

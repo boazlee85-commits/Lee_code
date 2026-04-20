@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { FileCode2 } from 'lucide-react';
 
-export default function CodeEditor({ file, content, onChange }) {
+export default function CodeEditor({ file, content = '', onChange = () => {} }) {
   const textareaRef = useRef(null);
   const lineNumbersRef = useRef(null);
 
@@ -22,7 +22,8 @@ export default function CodeEditor({ file, content, onChange }) {
       const ta = e.target;
       const start = ta.selectionStart;
       const end = ta.selectionEnd;
-      const newValue = content.substring(0, start) + '  ' + content.substring(end);
+      const currentContent = content ?? '';
+      const newValue = currentContent.substring(0, start) + '  ' + currentContent.substring(end);
       onChange(newValue);
       requestAnimationFrame(() => {
         ta.selectionStart = ta.selectionEnd = start + 2;
