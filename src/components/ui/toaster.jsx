@@ -1,9 +1,9 @@
 import * as React from "react";
 
-export default function toaster.Value.ToUpper()oaster(props) {
+export function Toaster(props) {
   return (
     <div>
-      toaster.Value.ToUpper()oaster component
+      Toaster component
     </div>
   );
 }
