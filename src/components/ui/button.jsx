@@ -1,9 +1,9 @@
 import * as React from "react";
 
-export default function button.Value.ToUpper()utton(props) {
+export function Button(props) {
   return (
-    <div>
-      button.Value.ToUpper()utton component
-    </div>
+    <button className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
+      {props.children}
+    </button>
   );
 }
