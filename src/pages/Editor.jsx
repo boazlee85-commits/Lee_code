@@ -1,20 +1,22 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import FileExplorer from '@/components/editor/FileExplorer'
 import CodeEditor from '@/components/editor/CodeEditor'
 import EditorTabs from '@/components/editor/EditorTabs'
 import TopBar from '@/components/editor/TopBar'
 import AIAssistant from '@/components/editor/AIAssistant'
-import FileTree from '@/components/editor/FileTree'
+import { buildTreeFromFiles } from '@/lib/fileTree'
 
 export default function Editor() {
+  const folderInputRef = useRef(null)
   const [projectTree, setProjectTree] = useState(null)
   const [activeFile, setActiveFile] = useState(null)
   const [fileContents, setFileContents] = useState({})
   const [projectName, setProjectName] = useState('')
   const [openTabs, setOpenTabs] = useState([])
+  const [saveStatus, setSaveStatus] = useState('')
 
   const handleFolderUpload = async (files) => {
-    const tree = FileTree.buildFromFiles(files)
+    const tree = buildTreeFromFiles(files)
     setProjectTree(tree)
     
     const contents = {}
@@ -58,20 +60,44 @@ export default function Editor() {
     setOpenTabs([])
   }
 
-  const handleSave = () => {
-    // Save functionality would go here
-    console.log('Saving files...', fileContents)
+  const handleSave = async () => {
+    if (!activeFile) return;
+
+    const payload = {
+      projectName,
+      files: fileContents,
+      savedAt: new Date().toISOString(),
+    }
+
+    try {
+      setSaveStatus('Saving...')
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.message || 'Save failed')
+      setSaveStatus(`Saved: ${result.path}`)
+    } catch (error) {
+      setSaveStatus(`Save failed: ${error.message}`)
+    }
   }
 
   return (
     <div className="flex flex-col h-screen bg-background">
       <TopBar 
-        onOpenFolder={handleFolderUpload}
+        onOpenFolder={() => folderInputRef.current?.click()}
         onNewProject={handleNewProject}
         onSave={handleSave}
         projectName={projectName}
         hasActiveFile={!!activeFile}
       />
+      {saveStatus && (
+        <div className="px-4 py-1 text-xs text-muted-foreground">{saveStatus}</div>
+      )}
       
       <div className="flex flex-1 overflow-hidden">
         <FileExplorer 
@@ -79,6 +105,7 @@ export default function Editor() {
           onFolderUpload={handleFolderUpload}
           onFileSelect={handleFileSelect}
           activePath={activeFile?.path}
+          fileInputRef={folderInputRef}
         />
         
         <div className="flex flex-col flex-1 bg-background">

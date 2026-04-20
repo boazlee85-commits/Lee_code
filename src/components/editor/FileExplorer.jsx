@@ -3,8 +3,9 @@ import { FolderUp, FileCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import FileTree from './FileTree';
 
-export default function FileExplorer({ tree, onFolderUpload, onFileSelect, activePath }) {
-  const inputRef = useRef(null);
+export default function FileExplorer({ tree, onFolderUpload, onFileSelect, activePath, fileInputRef }) {
+  const localInputRef = useRef(null);
+  const inputRef = fileInputRef || localInputRef;
 
   const handleChange = (e) => {
     const files = Array.from(e.target.files || []);
